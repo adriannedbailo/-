@@ -1,1430 +1,1920 @@
 <!DOCTYPE html>
-
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Трекер тренувань - повна версія</title>
+    <title>💪 Сучасний трекер тренувань</title>
     <style>
+        :root {
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-glass: rgba(255, 255, 255, 0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-glass: rgba(30, 41, 59, 0.8);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-primary: #818cf8;
+            --accent-secondary: #a78bfa;
+            --accent-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-```
-    body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        color: #333;
-        line-height: 1.4;
-        padding: 15px;
-        font-size: 14px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .header {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        margin-bottom: 20px;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    }
-
-    .header h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 8px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .header p {
-        font-size: 0.9rem;
-        color: #666;
-        margin-bottom: 15px;
-    }
-
-    .progress-bar {
-        background: #e9ecef;
-        border-radius: 25px;
-        height: 6px;
-        margin: 15px 0 10px 0;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 25px;
-        transition: width 0.5s ease;
-        width: 0%;
-    }
-
-    .data-management {
-        background: rgba(255,255,255,0.95);
-        border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 15px;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .navigation {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-
-    .week-selector {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-
-    .week-btn {
-        padding: 8px 4px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 600;
-        text-align: center;
-        font-size: 0.85rem;
-    }
-
-    .week-btn.active {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border-color: transparent;
-    }
-
-    .week-btn.completed {
-        background: #27ae60;
-        color: white;
-        border-color: transparent;
-    }
-
-    .btn {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.85rem;
-    }
-
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-secondary {
-        background: linear-gradient(135deg, #f39c12, #e67e22);
-    }
-
-    .btn-danger {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-    }
-
-    .btn-auto {
-        background: linear-gradient(135deg, #2ecc71, #27ae60);
-    }
-
-    .btn-small {
-        padding: 6px 10px;
-        font-size: 0.75rem;
-    }
-
-    .week-content {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-
-    .week-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f1f3f4;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .week-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #2c3e50;
-    }
-
-    .phase-badge {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-
-    .day {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        border-left: 4px solid #667eea;
-    }
-
-    .day-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 15px;
-    }
-
-    .exercise {
-        background: white;
-        border-radius: 10px;
-        padding: 14px;
-        margin-bottom: 14px;
-        border: 2px solid #f1f3f4;
-    }
-
-    .exercise-main {
-        border-left: 4px solid #e74c3c;
-        background: linear-gradient(135deg, #fff5f5, #ffeaea);
-    }
-
-    .exercise-legs {
-        border-left: 4px solid #3498db;
-        background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
-    }
-
-    .exercise-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .exercise-name {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 1rem;
-    }
-
-    .exercise-sets {
-        color: #666;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .weight-calculator {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 12px;
-        margin: 12px 0;
-        border: 1px solid #dee2e6;
-    }
-
-    .calc-toggle {
-        display: flex;
-        background: #e9ecef;
-        border-radius: 6px;
-        padding: 3px;
-        margin-bottom: 10px;
-    }
-
-    .calc-toggle button {
-        flex: 1;
-        padding: 6px 10px;
-        border: none;
-        background: transparent;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .calc-toggle button.active {
-        background: white;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        color: #667eea;
-    }
-
-    .calc-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-        flex-wrap: wrap;
-        font-size: 0.85rem;
-    }
-
-    .calc-input {
-        width: 65px;
-        padding: 6px 8px;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        text-align: center;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
-
-    .calc-input:focus {
-        outline: none;
-        border-color: #667eea;
-    }
-
-    .weight-result {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 0.85rem;
-    }
-
-    .percentage-display {
-        background: #e3f2fd;
-        color: #1565c0;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-left: 5px;
-    }
-
-    .auto-fill-section {
-        background: #e8f5e8;
-        border: 2px solid #27ae60;
-        border-radius: 8px;
-        padding: 12px;
-        margin: 12px 0;
-    }
-
-    .sets-container {
-        margin-top: 12px;
-    }
-
-    .sets-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 12px;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        font-size: 0.85rem;
-    }
-
-    .sets-table th {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 8px 6px;
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .sets-table td {
-        padding: 6px 4px;
-        text-align: center;
-        border-bottom: 1px solid #f1f3f4;
-    }
-
-    .sets-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .sets-table tr:hover {
-        background: #f8f9fa;
-    }
-
-    .warmup-row {
-        background: #f8f9fa !important;
-        color: #666;
-        font-style: italic;
-    }
-
-    .warmup-row:hover {
-        background: #f0f0f0 !important;
-    }
-
-    .working-row {
-        background: white;
-    }
-
-    .working-row:hover {
-        background: #f8f9fa;
-    }
-
-    .set-input-small {
-        width: 50px;
-        padding: 4px 6px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 0.8rem;
-    }
-
-    .set-input-small:focus {
-        outline: none;
-        border-color: #667eea;
-    }
-
-    .set-check-small {
-        width: 20px;
-        height: 20px;
-        border: 2px solid #ddd;
-        border-radius: 50%;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
-        font-size: 0.7rem;
-    }
-
-    .set-check-small.completed {
-        background: #27ae60;
-        border-color: #27ae60;
-        color: white;
-    }
-
-    .exercise-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-        gap: 8px;
-        background: #f8f9fa;
-        padding: 10px;
-        border-radius: 6px;
-        margin-top: 10px;
-    }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-value {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 0.9rem;
-    }
-
-    .stat-label {
-        color: #666;
-        font-size: 0.7rem;
-    }
-
-    .save-indicator {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        background: #27ae60;
-        color: white;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 1000;
-    }
-
-    .save-indicator.show {
-        opacity: 1;
-    }
-
-    .file-input {
-        display: none;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    @media (max-width: 768px) {
-        .week-selector {
-            grid-template-columns: repeat(6, 1fr);
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
         }
-        
-        .calc-row {
-            flex-direction: column;
-            align-items: stretch;
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: -1;
         }
-        
-        .data-management {
-            flex-direction: column;
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
         }
-        
-        .sets-table {
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .progress-section {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: var(--bg-tertiary);
+            border-radius: 50px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 50px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .weeks-navigation {
+            padding: 0 1rem;
+        }
+
+        .phase-group {
+            margin-bottom: 2rem;
+        }
+
+        .phase-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 0 1rem 0.5rem 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .week-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .week-item:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(4px);
+        }
+
+        .week-item.active {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .week-item.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .week-number {
+            font-weight: 700;
+            margin-right: 0.75rem;
+            min-width: 2rem;
+        }
+
+        .week-info {
+            flex: 1;
+        }
+
+        .week-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+        }
+
+        .week-subtitle {
             font-size: 0.75rem;
+            opacity: 0.8;
         }
-        
-        .sets-table th,
+
+        .week-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+        }
+
+        .week-item.completed .week-status {
+            background: white;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            max-width: calc(100vw - 280px);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Exercise cards */
+        .exercises-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .exercise-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-gradient);
+        }
+
+        .exercise-card.main-exercise::before {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .exercise-card.legs-exercise::before {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .exercise-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .exercise-icon {
+            font-size: 1.5rem;
+        }
+
+        .exercise-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .exercise-description {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .exercise-meta {
+            text-align: right;
+        }
+
+        .sets-reps {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .exercise-type {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        /* Collapsible calculator */
+        .calculator-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .calculator-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-toggle:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .calculator-toggle.active {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .toggle-text {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .calculator-toggle.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .calculator-content {
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-content.open {
+            max-height: 500px;
+        }
+
+        .calc-modes {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .calc-mode {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .calc-mode.active {
+            background: white;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-light);
+        }
+
+        [data-theme="dark"] .calc-mode.active {
+            background: var(--bg-primary);
+        }
+
+        .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .calc-input {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: center;
+            width: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .calc-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .calc-result {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            box-shadow: var(--shadow-light);
+        }
+
+        .percentage-badge {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Sets table */
+        .sets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .sets-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
         .sets-table td {
-            padding: 6px 2px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
         }
-    }
-</style>
-```
 
+        .sets-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .warmup-row {
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .working-row {
+            background: var(--bg-primary);
+        }
+
+        .working-row:hover {
+            background: var(--bg-secondary);
+        }
+
+        .set-input {
+            width: 60px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        .set-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .set-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .set-checkbox.completed {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .set-checkbox:hover {
+            transform: scale(1.1);
+        }
+
+        /* Exercise stats */
+        .exercise-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100vw;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 101;
+                background: var(--accent-gradient);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: var(--shadow-medium);
+            }
+
+            .content-header {
+                margin-top: 3rem;
+            }
+
+            .calc-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sets-table {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .exercise-card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .exercise-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .exercise-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .exercise-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        /* Save indicator */
+        .save-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>💪 Трекер тренувань - Повна програма</h1>
-            <p>12-тижнева наукова програма жиму + ноги з персональними 1ПМ</p>
-            <div class="progress-bar">
-                <div class="progress-fill" id="overallProgress"></div>
+<body data-theme="light">
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display: none;">
+        ☰
+    </button>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">💪 Bench Beast</div>
+                <div class="subtitle">12-тижнева програма сили</div>
             </div>
-            <div id="progressText" style="font-size: 0.85rem;">Тиждень 1 з 12 • 0% завершено</div>
-        </div>
 
-```
-    <div class="data-management">
-        <button class="btn btn-small" onclick="exportData()">📥 Експорт</button>
-        <label for="importFile" class="btn btn-secondary btn-small">📤 Імпорт</label>
-        <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
-        <button class="btn btn-danger btn-small" onclick="clearAllData()">🗑️ Очистити</button>
-        <div style="font-size: 0.8rem; color: #666;" id="storageInfo">Використано: 0KB</div>
-    </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Змінити тему">
+                🌙
+            </button>
 
-    <div class="navigation">
-        <div class="week-selector" id="weekSelector">
-            <!-- Тижні будуть згенеровані тут -->
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div style="font-size: 0.9rem;">
-                <span style="font-weight: 600; color: #666;">Поточний тиждень: </span>
-                <span id="currentWeekInfo" style="font-weight: 700; color: #2c3e50;">1</span>
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgress"></div>
+                </div>
+                <div class="progress-text" id="progressText">Тиждень 1 з 12 • 0% завершено</div>
             </div>
-            <button class="btn btn-small" onclick="completeWeek()" id="completeWeekBtn">✅ Завершити тиждень</button>
-        </div>
-    </div>
 
-    <div id="weekContent" class="week-content">
-        <!-- Контент тижня буде тут -->
-    </div>
-</div>
+            <nav class="weeks-navigation">
+                <div class="phase-group">
+                    <div class="phase-title">Фаза 1: Базовий об'єм</div>
+                    <div class="week-item active" onclick="loadWeek(1)">
+                        <div class="week-number">1</div>
+                        <div class="week-info">
+                            <div class="week-title">Базовий старт</div>
+                            <div class="week-subtitle">65% × 4×10</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(2)">
+                        <div class="week-number">2</div>
+                        <div class="week-info">
+                            <div class="week-title">Адаптація</div>
+                            <div class="week-subtitle">67% × 4×9</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(3)">
+                        <div class="week-number">3</div>
+                        <div class="week-info">
+                            <div class="week-title">Прогресія</div>
+                            <div class="week-subtitle">69% × 4×8</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(4)">
+                        <div class="week-number">4</div>
+                        <div class="week-info">
+                            <div class="week-title">Закріплення</div>
+                            <div class="week-subtitle">70% × 4×8</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                </div>
 
-<div id="saveIndicator" class="save-indicator">✓ Збережено</div>
+                <div class="phase-group">
+                    <div class="phase-title">Фаза 2: Розвиток сили</div>
+                    <div class="week-item" onclick="loadWeek(5)">
+                        <div class="week-number">5</div>
+                        <div class="week-info">
+                            <div class="week-title">Початок сили</div>
+                            <div class="week-subtitle">75% × 4×6</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(6)">
+                        <div class="week-number">6</div>
+                        <div class="week-info">
+                            <div class="week-title">П'ятірки</div>
+                            <div class="week-subtitle">77% × 5×5</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(7)">
+                        <div class="week-number">7</div>
+                        <div class="week-info">
+                            <div class="week-title">Важкі п'ятірки</div>
+                            <div class="week-subtitle">80% × 5×5</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(8)">
+                        <div class="week-number">8</div>
+                        <div class="week-info">
+                            <div class="week-title">Делоад</div>
+                            <div class="week-subtitle">75% × 4×6</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                </div>
 
-<script>
-    let currentWeek = 1;
-    let programData = {};
+                <div class="phase-group">
+                    <div class="phase-title">Фаза 3: Максимальна сила</div>
+                    <div class="week-item" onclick="loadWeek(9)">
+                        <div class="week-number">9</div>
+                        <div class="week-info">
+                            <div class="week-title">Четвірки</div>
+                            <div class="week-subtitle">85% × 5×4</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(10)">
+                        <div class="week-number">10</div>
+                        <div class="week-info">
+                            <div class="week-title">Трійки</div>
+                            <div class="week-subtitle">90% × 5×3</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(11)">
+                        <div class="week-number">11</div>
+                        <div class="week-info">
+                            <div class="week-title">Важкі трійки</div>
+                            <div class="week-subtitle">92% × 5×3</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                    <div class="week-item" onclick="loadWeek(12)">
+                        <div class="week-number">12</div>
+                        <div class="week-info">
+                            <div class="week-title">Пік сили</div>
+                            <div class="week-subtitle">95% × 3×2</div>
+                        </div>
+                        <div class="week-status"></div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
 
-    // Структура програми з правильними відсотками для кожного тижня
-    const programStructure = {
-        1: { phase: 1, percentage: 0.65, sets: 4, reps: 10, title: "Базовий об'єм" },
-        2: { phase: 1, percentage: 0.67, sets: 4, reps: 9, title: "Базовий об'єм" },
-        3: { phase: 1, percentage: 0.69, sets: 4, reps: 8, title: "Базовий об'єм" },
-        4: { phase: 1, percentage: 0.70, sets: 4, reps: 8, title: "Базовий об'єм" },
-        5: { phase: 2, percentage: 0.75, sets: 4, reps: 6, title: "Розвиток сили" },
-        6: { phase: 2, percentage: 0.77, sets: 5, reps: 5, title: "Розвиток сили" },
-        7: { phase: 2, percentage: 0.80, sets: 5, reps: 5, title: "Розвиток сили" },
-        8: { phase: 2, percentage: 0.75, sets: 4, reps: 6, title: "Делоад тиждень" },
-        9: { phase: 3, percentage: 0.85, sets: 5, reps: 4, title: "Максимальна сила" },
-        10: { phase: 3, percentage: 0.90, sets: 5, reps: 3, title: "Максимальна сила" },
-        11: { phase: 3, percentage: 0.92, sets: 5, reps: 3, title: "Максимальна сила" },
-        12: { phase: 3, percentage: 0.95, sets: 3, reps: 2, title: "Пікова сила" }
-    };
-
-    // Оновлена структура вправ з ногами
-    const exerciseTemplates = {
-        1: [ // День 1: Жим + присід + спина + трицепс
-            { id: 'bench', name: '🎯 Жим штанги лежачи', isMain: true, basePercentage: 1.0, type: 'main' },
-            { id: 'squat', name: '🦵 Присідання зі штангою', isMain: true, basePercentage: 1.0, type: 'legs' },
-            { id: 'row', name: '🚣 Тяга штанги в нахилі', sets: 3, reps: 9, basePercentage: 0.85, type: 'back' },
-            { id: 'close_grip', name: '💪 Вузький жим / Віджимання на брусах', sets: 3, reps: 10, basePercentage: 0.90, type: 'tricep' }
-        ],
-        2: [ // День 2: Плечі + спина
-            { id: 'dumbbell_press', name: '🏋️ Жим гантелей стоячи', sets: 4, reps: 7, basePercentage: 0.65, type: 'shoulders' },
-            { id: 'pulldown', name: '🚣 Підтягування / Тяга верхнього блоку', sets: 3, reps: 9, basePercentage: 0.75, type: 'back' },
-            { id: 'lateral_raise', name: '🔥 Розведення гантелей в сторони', sets: 3, reps: 12, basePercentage: 0.40, type: 'shoulders' },
-            { id: 'face_pull', name: '🎯 Face Pull (задні дельти)', sets: 3, reps: 15, basePercentage: 0.35, type: 'shoulders' }
-        ],
-        3: [ // День 3: Об'єм + відновлення + ноги
-            { id: 'volume_bench', name: '🏋️ Жим об\'ємний (лежачи)', sets: 3, reps: 10, basePercentage: 0.80, type: 'main' },
-            { id: 'romanian_deadlift', name: '🦵 Румунська тяга', sets: 3, reps: 8, basePercentage: 0.75, type: 'legs' },
-            { id: 'calf_raise', name: '🦵 Піднімання на носки', sets: 4, reps: 15, basePercentage: 0.70, type: 'legs' },
-            { id: 'dumbbell_row', name: '🚣 Тяга гантелі в нахилі', sets: 3, reps: 10, basePercentage: 0.70, type: 'back' },
-            { id: 'tricep_ext', name: '💪 Розгинання рук на блоці', sets: 3, reps: 12, basePercentage: 0.55, type: 'tricep' },
-            { id: 'bicep_curl', name: '💪 Згинання на біцепс', sets: 3, reps: 12, basePercentage: 0.50, type: 'bicep' }
-        ]
-    };
-
-    // Функція для генерації розминочних підходів
-    function generateWarmupSets(workingWeight) {
-        if (workingWeight <= 0) return [];
-        
-        let warmupSets = [];
-        
-        if (workingWeight < 60) {
-            // 2 розминочних
-            warmupSets = [
-                { percentage: 0.40, reps: 10 },
-                { percentage: 0.70, reps: 6 }
-            ];
-        } else if (workingWeight <= 100) {
-            // 3 розминочних
-            warmupSets = [
-                { percentage: 0.40, reps: 10 },
-                { percentage: 0.60, reps: 8 },
-                { percentage: 0.80, reps: 3 }
-            ];
-        } else if (workingWeight <= 150) {
-            // 4 розминочних
-            warmupSets = [
-                { percentage: 0.30, reps: 10 },
-                { percentage: 0.50, reps: 8 },
-                { percentage: 0.70, reps: 5 },
-                { percentage: 0.85, reps: 2 }
-            ];
-        } else {
-            // 5 розминочних для великих ваг
-            warmupSets = [
-                { percentage: 0.25, reps: 10 },
-                { percentage: 0.40, reps: 8 },
-                { percentage: 0.60, reps: 6 },
-                { percentage: 0.75, reps: 3 },
-                { percentage: 0.85, reps: 2 }
-            ];
-        }
-        
-        return warmupSets.map((set, index) => ({
-            weight: Math.round(workingWeight * set.percentage / 2.5) * 2.5,
-            reps: set.reps,
-            isWarmup: true,
-            setNumber: `Р${index + 1}`
-        }));
-    }
-
-    // Ініціалізація
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM завантажено, ініціалізуємо...');
-        loadProgramData();
-        generateWeekSelector();
-        loadWeek(currentWeek);
-        updateStorageInfo();
-    });
-
-    function loadProgramData() {
-        const saved = localStorage.getItem('benchPressTrackerFull');
-        if (saved) {
-            try {
-                programData = JSON.parse(saved);
-                currentWeek = programData.currentWeek || 1;
-                console.log('Дані завантажено з localStorage');
-            } catch (e) {
-                console.error('Помилка завантаження даних:', e);
-                initializeProgramData();
-            }
-        } else {
-            console.log('Ініціалізуємо нові дані');
-            initializeProgramData();
-        }
-    }
-
-    function initializeProgramData() {
-        programData = {
-            currentWeek: 1,
-            weeks: {}
-        };
-
-        for (let week = 1; week <= 12; week++) {
-            programData.weeks[week] = {
-                completed: false,
-                days: {}
-            };
-
-            for (let day = 1; day <= 3; day++) {
-                programData.weeks[week].days[day] = {
-                    completed: false,
-                    exercises: {}
-                };
-
-                exerciseTemplates[day].forEach(exercise => {
-                    programData.weeks[week].days[day].exercises[exercise.id] = {
-                        oneRepMax: 0,
-                        workingWeight: 0,
-                        sets: {}
-                    };
-                });
-            }
-        }
-        saveProgramData();
-    }
-
-    function saveProgramData() {
-        try {
-            localStorage.setItem('benchPressTrackerFull', JSON.stringify(programData));
-            showSaveIndicator();
-            updateStorageInfo();
-        } catch (e) {
-            console.error('Помилка збереження:', e);
-            alert('Помилка збереження даних. Можливо, переповнена пам\'ять браузера.');
-        }
-    }
-
-    function showSaveIndicator() {
-        const indicator = document.getElementById('saveIndicator');
-        if (indicator) {
-            indicator.classList.add('show');
-            setTimeout(() => indicator.classList.remove('show'), 1500);
-        }
-    }
-
-    function updateStorageInfo() {
-        const data = localStorage.getItem('benchPressTrackerFull');
-        const size = data ? (data.length / 1024).toFixed(1) : 0;
-        const element = document.getElementById('storageInfo');
-        if (element) {
-            element.textContent = `Використано: ${size}KB`;
-        }
-    }
-
-    function generateWeekSelector() {
-        const selector = document.getElementById('weekSelector');
-        if (!selector) return;
-        
-        selector.innerHTML = '';
-
-        for (let week = 1; week <= 12; week++) {
-            const btn = document.createElement('button');
-            btn.className = 'week-btn';
-            btn.textContent = week;
-            btn.onclick = () => loadWeek(week);
-
-            if (programData.weeks && programData.weeks[week] && programData.weeks[week].completed) {
-                btn.classList.add('completed');
-            }
-            if (week === currentWeek) {
-                btn.classList.add('active');
-            }
-
-            selector.appendChild(btn);
-        }
-    }
-
-    function loadWeek(weekNum) {
-        console.log('Завантажуємо тиждень', weekNum);
-        currentWeek = weekNum;
-        programData.currentWeek = currentWeek;
-        saveProgramData();
-        generateWeekSelector();
-        displayWeek(weekNum);
-        updateOverallProgress();
-    }
-
-    function displayWeek(weekNum) {
-        const weekData = programStructure[weekNum];
-        const content = document.getElementById('weekContent');
-        if (!content) return;
-        
-        const phaseNames = {1: 'Фаза 1', 2: 'Фаза 2', 3: 'Фаза 3'};
-        
-        content.innerHTML = `
-            <div class="week-info">
+        <!-- Main content -->
+        <main class="main-content">
+            <header class="content-header">
                 <div>
-                    <div class="week-title">📅 Тиждень ${weekNum}</div>
-                    <div style="color: #666; margin-top: 3px; font-size: 0.85rem;">${weekData.title}</div>
+                    <h1 class="page-title" id="pageTitle">Тиждень 1: Базовий старт</h1>
                 </div>
-                <div class="phase-badge">${phaseNames[weekData.phase]}</div>
-            </div>
-
-            ${generateDay(weekNum, 1, "🏋️ День 1: Жим + присід + спина + трицепс")}
-            ${generateDay(weekNum, 2, "💪 День 2: Плечі + спина")}
-            ${generateDay(weekNum, 3, "🔄 День 3: Об'єм + ноги + відновлення")}
-        `;
-
-        const currentWeekInfo = document.getElementById('currentWeekInfo');
-        if (currentWeekInfo) {
-            currentWeekInfo.textContent = `${weekNum} (${weekData.title})`;
-        }
-    }
-
-    function generateDay(weekNum, dayNum, title) {
-        const exercises = exerciseTemplates[dayNum];
-        return `
-            <div class="day">
-                <div class="day-title">${title}</div>
-                ${exercises.map(exercise => generateExercise(weekNum, dayNum, exercise)).join('')}
-            </div>
-        `;
-    }
-
-    function generateExercise(weekNum, dayNum, exercise) {
-        const weekData = programStructure[weekNum];
-        const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exercise.id] || {};
-        
-        const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
-        const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
-        
-        const weekPercentage = exercise.isMain ? weekData.percentage : (weekData.percentage * exercise.basePercentage);
-        const displayPercentage = Math.round(weekPercentage * 100);
-
-        let exerciseClass = 'exercise';
-        if (exercise.type === 'main') exerciseClass += ' exercise-main';
-        if (exercise.type === 'legs') exerciseClass += ' exercise-legs';
-
-        return `
-            <div class="${exerciseClass}">
-                <div class="exercise-header">
-                    <div class="exercise-name">${exercise.name}</div>
-                    <div class="exercise-sets">${sets}×${reps}</div>
-                </div>
-
-                <div class="weight-calculator">
-                    <div class="calc-toggle">
-                        <button onclick="toggleCalcMode(${weekNum}, ${dayNum}, '${exercise.id}', 'direct')" 
-                                id="direct-${weekNum}-${dayNum}-${exercise.id}" class="active">
-                            Ввести 1ПМ
-                        </button>
-                        <button onclick="toggleCalcMode(${weekNum}, ${dayNum}, '${exercise.id}', 'calculate')" 
-                                id="calculate-${weekNum}-${dayNum}-${exercise.id}">
-                            Розрахувати 1ПМ
-                        </button>
-                    </div>
-
-                    <div id="calc-direct-${weekNum}-${dayNum}-${exercise.id}">
-                        <div class="calc-row">
-                            <span style="font-weight: 600;">1ПМ:</span>
-                            <input type="number" class="calc-input" 
-                                   id="oneRM-${weekNum}-${dayNum}-${exercise.id}" 
-                                   value="${exerciseData.oneRepMax || ''}"
-                                   placeholder="0"
-                                   onchange="calculate1RMDirect(${weekNum}, ${dayNum}, '${exercise.id}', ${weekPercentage})">
-                            <span>кг →</span>
-                            <div class="weight-result" id="result-${weekNum}-${dayNum}-${exercise.id}">
-                                ${exerciseData.workingWeight || 0} кг
-                            </div>
-                            <div class="percentage-display">${displayPercentage}%</div>
-                        </div>
-                    </div>
-
-                    <div id="calc-calculate-${weekNum}-${dayNum}-${exercise.id}" class="hidden">
-                        <div class="calc-row">
-                            <span style="font-weight: 600;">Максимум:</span>
-                            <input type="number" class="calc-input" 
-                                   id="maxWeight-${weekNum}-${dayNum}-${exercise.id}" 
-                                   placeholder="Вага">
-                            <span>кг на</span>
-                            <input type="number" class="calc-input" 
-                                   id="maxReps-${weekNum}-${dayNum}-${exercise.id}" 
-                                   placeholder="Повтори">
-                            <span>повторів</span>
-                            <button class="btn btn-small" onclick="calculate1RMFromReps(${weekNum}, ${dayNum}, '${exercise.id}', ${weekPercentage})">
-                                Розрахувати
-                            </button>
-                        </div>
-                    </div>
-                    
-                    ${weekNum > 1 ? `
-                        <button class="btn btn-secondary btn-small" onclick="autoProgressWeight(${weekNum}, ${dayNum}, '${exercise.id}', ${weekPercentage})" style="margin-top: 8px;">
-                            🚀 Прогресія з минулого тижня
-                        </button>
-                    ` : ''}
-                </div>
-
-                <div class="auto-fill-section">
-                    <button class="btn btn-auto btn-small" onclick="autoFillExercise(${weekNum}, ${dayNum}, '${exercise.id}', ${sets}, ${reps})" style="width: 100%;">
-                        🤖 Автозаповнення підходів
+                <div class="action-buttons">
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">
+                        📥 Експорт
+                    </button>
+                    <label for="importFile" class="btn btn-secondary btn-sm">
+                        📤 Імпорт
+                    </label>
+                    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+                    <button class="btn btn-success" onclick="completeWeek()" id="completeWeekBtn">
+                        ✅ Завершити тиждень
                     </button>
                 </div>
+            </header>
 
-                <div class="sets-container">
-                    <table class="sets-table" id="setsTable-${weekNum}-${dayNum}-${exercise.id}">
-                        <thead>
-                            <tr>
-                                <th>Підхід</th>
-                                <th>Вага (кг)</th>
-                                <th>Повтори</th>
-                                <th>RPE</th>
-                                <th>✓</th>
-                            </tr>
-                        </thead>
-                        <tbody id="setsBody-${weekNum}-${dayNum}-${exercise.id}">
-                            <!-- Підходи будуть згенеровані автоматично -->
-                        </tbody>
-                    </table>
-                    
-                    <div class="exercise-stats">
-                        <div class="stat-item">
-                            <div class="stat-value" id="completedSets-${weekNum}-${dayNum}-${exercise.id}">0</div>
-                            <div class="stat-label">Підходи</div>
+            <div class="exercises-grid" id="exercisesGrid">
+                <!-- Exercise cards will be generated here -->
+            </div>
+        </main>
+    </div>
+
+    <div id="saveIndicator" class="save-indicator">✓ Збережено</div>
+
+    <script>
+        let currentWeek = 1;
+        let currentTheme = 'light';
+        let programData = {};
+
+        // Program structure remains the same
+        const programStructure = {
+            1: { phase: 1, percentage: 0.65, sets: 4, reps: 10, title: "Базовий старт" },
+            2: { phase: 1, percentage: 0.67, sets: 4, reps: 9, title: "Адаптація" },
+            3: { phase: 1, percentage: 0.69, sets: 4, reps: 8, title: "Прогресія" },
+            4: { phase: 1, percentage: 0.70, sets: 4, reps: 8, title: "Закріплення" },
+            5: { phase: 2, percentage: 0.75, sets: 4, reps: 6, title: "Початок сили" },
+            6: { phase: 2, percentage: 0.77, sets: 5, reps: 5, title: "П'ятірки" },
+            7: { phase: 2, percentage: 0.80, sets: 5, reps: 5, title: "Важкі п'ятірки" },
+            8: { phase: 2, percentage: 0.75, sets: 4, reps: 6, title: "Делоад" },
+            9: { phase: 3, percentage: 0.85, sets: 5, reps: 4, title: "Четвірки" },
+            10: { phase: 3, percentage: 0.90, sets: 5, reps: 3, title: "Трійки" },
+            11: { phase: 3, percentage: 0.92, sets: 5, reps: 3, title: "Важкі трійки" },
+            12: { phase: 3, percentage: 0.95, sets: 3, reps: 2, title: "Пік сили" }
+        };
+
+        // Updated exercise templates with clearer descriptions
+        const exerciseTemplates = {
+            1: [ // День 1: Жим + присід + спина + трицепс
+                { 
+                    id: 'bench', 
+                    name: 'Жим штанги лежачи', 
+                    description: 'Класичний жим лежачи на горизонтальній лаві',
+                    icon: '🏋️',
+                    isMain: true, 
+                    basePercentage: 1.0, 
+                    type: 'main' 
+                },
+                { 
+                    id: 'squat', 
+                    name: 'Присідання зі штангою', 
+                    description: 'Присідання зі штангою на плечах до паралелі',
+                    icon: '🦵',
+                    isMain: true, 
+                    basePercentage: 1.0, 
+                    type: 'legs' 
+                },
+                { 
+                    id: 'row', 
+                    name: 'Тяга штанги в нахилі', 
+                    description: 'Тяга штанги до поясу в нахилі 45°',
+                    icon: '🚣',
+                    sets: 3, 
+                    reps: 9, 
+                    basePercentage: 0.90, 
+                    type: 'back' 
+                },
+                { 
+                    id: 'close_grip', 
+                    name: 'Вузький жим лежачи', 
+                    description: 'Жим штанги вузьким хватом для трицепсів',
+                    icon: '💪',
+                    sets: 3, 
+                    reps: 10, 
+                    basePercentage: 0.85, 
+                    type: 'tricep' 
+                }
+            ],
+            2: [ // День 2: Плечі + спина
+                { 
+                    id: 'dumbbell_press', 
+                    name: 'Жим гантелей стоячи', 
+                    description: 'Жим гантелей над головою стоячи',
+                    icon: '🏋️',
+                    sets: 4, 
+                    reps: 7, 
+                    basePercentage: 0.70, 
+                    type: 'shoulders' 
+                },
+                { 
+                    id: 'pulldown', 
+                    name: 'Тяга верхнього блоку', 
+                    description: 'Тяга верхнього блоку до грудей широким хватом',
+                    icon: '🚣',
+                    sets: 3, 
+                    reps: 9, 
+                    basePercentage: 0.80, 
+                    type: 'back' 
+                },
+                { 
+                    id: 'lateral_raise', 
+                    name: 'Махи гантелями в сторони', 
+                    description: 'Підйом гантелей в сторони стоячи',
+                    icon: '🔥',
+                    sets: 3, 
+                    reps: 12, 
+                    basePercentage: 0.50, 
+                    type: 'shoulders' 
+                },
+                { 
+                    id: 'face_pull', 
+                    name: 'Тяга канату до обличчя', 
+                    description: 'Тяга канату до обличчя для задніх дельт',
+                    icon: '🎯',
+                    sets: 3, 
+                    reps: 15, 
+                    basePercentage: 0.45, 
+                    type: 'shoulders' 
+                }
+            ],
+            3: [ // День 3: Об'єм + відновлення + ноги
+                { 
+                    id: 'volume_bench', 
+                    name: "Жим лежачи (об'ємний)", 
+                    description: 'Жим лежачи з меншою вагою для об\'єму',
+                    icon: '🏋️',
+                    sets: 3, 
+                    reps: 10, 
+                    basePercentage: 0.75, 
+                    type: 'main' 
+                },
+                { 
+                    id: 'romanian_deadlift', 
+                    name: 'Румунська тяга', 
+                    description: 'Румунська тяга зі штангою для задньої поверхні',
+                    icon: '🦵',
+                    sets: 3, 
+                    reps: 8, 
+                    basePercentage: 0.80, 
+                    type: 'legs' 
+                },
+                { 
+                    id: 'calf_raise', 
+                    name: 'Підйом на носки', 
+                    description: 'Підйом на носки стоячи в тренажері',
+                    icon: '🦵',
+                    sets: 4, 
+                    reps: 15, 
+                    basePercentage: 0.75, 
+                    type: 'legs' 
+                },
+                { 
+                    id: 'dumbbell_row', 
+                    name: 'Тяга гантелі однією рукою', 
+                    description: 'Тяга гантелі в нахилі з опорою на лаву',
+                    icon: '🚣',
+                    sets: 3, 
+                    reps: 10, 
+                    basePercentage: 0.75, 
+                    type: 'back' 
+                },
+                { 
+                    id: 'tricep_ext', 
+                    name: 'Розгинання рук на блоці', 
+                    description: 'Розгинання рук на верхньому блоці',
+                    icon: '💪',
+                    sets: 3, 
+                    reps: 12, 
+                    basePercentage: 0.65, 
+                    type: 'tricep' 
+                },
+                { 
+                    id: 'bicep_curl', 
+                    name: 'Згинання на біцепс', 
+                    description: 'Згинання рук з гантелями стоячи',
+                    icon: '💪',
+                    sets: 3, 
+                    reps: 12, 
+                    basePercentage: 0.60, 
+                    type: 'bicep' 
+                }
+            ]
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgramData();
+            loadWeek(currentWeek);
+            updateMobileMenu();
+        });
+
+        function loadProgramData() {
+            const saved = localStorage.getItem('benchPressTrackerModern');
+            if (saved) {
+                try {
+                    programData = JSON.parse(saved);
+                    currentWeek = programData.currentWeek || 1;
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                    initializeProgramData();
+                }
+            } else {
+                initializeProgramData();
+            }
+        }
+
+        function initializeProgramData() {
+            programData = {
+                currentWeek: 1,
+                weeks: {}
+            };
+
+            for (let week = 1; week <= 12; week++) {
+                programData.weeks[week] = {
+                    completed: false,
+                    days: {}
+                };
+
+                for (let day = 1; day <= 3; day++) {
+                    programData.weeks[week].days[day] = {
+                        completed: false,
+                        exercises: {}
+                    };
+
+                    exerciseTemplates[day].forEach(exercise => {
+                        programData.weeks[week].days[day].exercises[exercise.id] = {
+                            oneRepMax: 0,
+                            workingWeight: 0,
+                            sets: {}
+                        };
+                    });
+                }
+            }
+            saveProgramData();
+        }
+
+        function saveProgramData() {
+            try {
+                localStorage.setItem('benchPressTrackerModern', JSON.stringify(programData));
+                showSaveIndicator();
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
+        }
+
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 2000);
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+            
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function loadWeek(weekNum) {
+            currentWeek = weekNum;
+            programData.currentWeek = currentWeek;
+            saveProgramData();
+            
+            updateSidebarWeeks();
+            displayWeek(weekNum);
+            updateProgress();
+        }
+
+        function updateSidebarWeeks() {
+            const weekItems = document.querySelectorAll('.week-item');
+            weekItems.forEach((item, index) => {
+                const weekNumber = index + 1;
+                item.classList.remove('active', 'completed');
+                
+                if (weekNumber === currentWeek) {
+                    item.classList.add('active');
+                } else if (programData.weeks[weekNumber]?.completed) {
+                    item.classList.add('completed');
+                }
+            });
+        }
+
+        function displayWeek(weekNum) {
+            const weekData = programStructure[weekNum];
+            const pageTitle = document.getElementById('pageTitle');
+            pageTitle.textContent = `Тиждень ${weekNum}: ${weekData.title}`;
+
+            const grid = document.getElementById('exercisesGrid');
+            grid.innerHTML = '';
+
+            // Generate exercise cards for all 3 days
+            for (let day = 1; day <= 3; day++) {
+                const dayTitle = getDayTitle(day);
+                const dayHeader = document.createElement('h2');
+                dayHeader.style.cssText = `
+                    margin: 2rem 0 1rem 0;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    border-bottom: 2px solid var(--border-color);
+                    padding-bottom: 0.5rem;
+                `;
+                dayHeader.textContent = dayTitle;
+                grid.appendChild(dayHeader);
+
+                exerciseTemplates[day].forEach(exercise => {
+                    const card = createExerciseCard(weekNum, day, exercise);
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function getDayTitle(day) {
+            const titles = {
+                1: '🔥 День 1: Жим + Присід + Спина + Трицепс',
+                2: '💪 День 2: Плечі + Спина',
+                3: '🔄 День 3: Об\'єм + Ноги + Відновлення'
+            };
+            return titles[day];
+        }
+
+        function createExerciseCard(weekNum, dayNum, exercise) {
+            const weekData = programStructure[weekNum];
+            const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exercise.id] || {};
+            
+            const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
+            const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
+            const weekPercentage = exercise.isMain ? weekData.percentage : (weekData.percentage * exercise.basePercentage);
+            const displayPercentage = Math.round(weekPercentage * 100);
+
+            const card = document.createElement('div');
+            card.className = `exercise-card ${exercise.type}-exercise`;
+            
+            const cardId = `card-${weekNum}-${dayNum}-${exercise.id}`;
+            card.id = cardId;
+
+            card.innerHTML = `
+                <div class="exercise-header">
+                    <div class="exercise-title">
+                        <div class="exercise-icon">${exercise.icon}</div>
+                        <div>
+                            <div class="exercise-name">${exercise.name}</div>
+                            <div class="exercise-description">${exercise.description}</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalReps-${weekNum}-${dayNum}-${exercise.id}">0</div>
-                            <div class="stat-label">Повтори</div>
+                    </div>
+                    <div class="exercise-meta">
+                        <div class="sets-reps">${sets}×${reps}</div>
+                        <div class="exercise-type">${getExerciseTypeName(exercise.type)}</div>
+                    </div>
+                </div>
+
+                <div class="calculator-section">
+                    <div class="calculator-toggle" onclick="toggleCalculator('${cardId}')">
+                        <div class="toggle-text">
+                            <span>⚖️</span>
+                            <span>Калькулятор ваги (${displayPercentage}%)</span>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalVolume-${weekNum}-${dayNum}-${exercise.id}">0</div>
-                            <div class="stat-label">Об'єм (кг)</div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="calculator-content" id="calc-${cardId}">
+                        <div class="calc-modes">
+                            <button class="calc-mode active" onclick="switchCalcMode('${cardId}', 'direct')">
+                                Ввести 1ПМ
+                            </button>
+                            <button class="calc-mode" onclick="switchCalcMode('${cardId}', 'calculate')">
+                                Розрахувати 1ПМ
+                            </button>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="avgRPE-${weekNum}-${dayNum}-${exercise.id}">0</div>
-                            <div class="stat-label">Сер. RPE</div>
+                        
+                        <div id="direct-${cardId}">
+                            <div class="calc-row">
+                                <span style="font-weight: 600;">1ПМ:</span>
+                                <input type="number" class="calc-input" 
+                                       id="oneRM-${cardId}" 
+                                       value="${exerciseData.oneRepMax || ''}"
+                                       placeholder="кг"
+                                       onchange="calculate1RMDirect('${cardId}', ${weekPercentage})">
+                                <span>→</span>
+                                <div class="calc-result" id="result-${cardId}">
+                                    ${exerciseData.workingWeight || 0} кг
+                                </div>
+                                <div class="percentage-badge">${displayPercentage}%</div>
+                            </div>
+                        </div>
+
+                        <div id="calculate-${cardId}" class="hidden">
+                            <div class="calc-row">
+                                <span style="font-weight: 600;">Максимум:</span>
+                                <input type="number" class="calc-input" 
+                                       id="maxWeight-${cardId}" 
+                                       placeholder="Вага">
+                                <span>кг на</span>
+                                <input type="number" class="calc-input" 
+                                       id="maxReps-${cardId}" 
+                                       placeholder="Повтори">
+                                <span>повторів</span>
+                                <button class="btn btn-primary btn-sm" onclick="calculate1RMFromReps('${cardId}', ${weekPercentage})">
+                                    Розрахувати
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <button class="btn btn-primary btn-sm" onclick="autoFillExercise('${cardId}', ${sets}, ${reps})">
+                                🤖 Автозаповнення
+                            </button>
+                            ${weekNum > 1 ? `
+                                <button class="btn btn-secondary btn-sm" onclick="autoProgressWeight('${cardId}', ${weekPercentage})">
+                                    🚀 Прогресія
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-    }
 
-    function generateSetsTable(weekNum, dayNum, exerciseId, totalSets, targetReps) {
-        const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId] || {};
-        const workingWeight = exerciseData.workingWeight || 0;
-        
-        const warmupSets = generateWarmupSets(workingWeight);
-        
-        const workingSets = Array.from({length: totalSets}, (_, i) => ({
-            weight: workingWeight,
-            reps: targetReps,
-            isWarmup: false,
-            setNumber: i + 1
-        }));
-        
-        const allSets = [...warmupSets, ...workingSets];
-        const tbody = document.getElementById(`setsBody-${weekNum}-${dayNum}-${exerciseId}`);
-        
-        if (tbody) {
-            tbody.innerHTML = allSets.map((set, index) => 
-                generateSetRow(weekNum, dayNum, exerciseId, set, index + 1)
-            ).join('');
-        }
-    }
+                <table class="sets-table" id="setsTable-${cardId}">
+                    <thead>
+                        <tr>
+                            <th>Підхід</th>
+                            <th>Вага (кг)</th>
+                            <th>Повтори</th>
+                            <th>RPE</th>
+                            <th>✓</th>
+                        </tr>
+                    </thead>
+                    <tbody id="setsBody-${cardId}">
+                        <!-- Sets will be generated here -->
+                    </tbody>
+                </table>
 
-    function generateSetRow(weekNum, dayNum, exerciseId, setData, rowIndex) {
-        const savedSetData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId]?.sets[rowIndex] || {};
-        const isCompleted = savedSetData.completed || false;
-        const rowClass = setData.isWarmup ? 'warmup-row' : 'working-row';
-        
-        return `
-            <tr id="setRow-${weekNum}-${dayNum}-${exerciseId}-${rowIndex}" class="${rowClass}" ${isCompleted ? 'style="background: #f0fff4;"' : ''}>
-                <td><strong>${setData.setNumber}</strong></td>
-                <td>
-                    <input type="number" class="set-input-small" 
-                           id="weight-${weekNum}-${dayNum}-${exerciseId}-${rowIndex}"
-                           placeholder="${setData.weight || 'кг'}" 
-                           value="${savedSetData.weight || (setData.isWarmup ? setData.weight : '')}"
-                           onchange="updateSetData(${weekNum}, ${dayNum}, '${exerciseId}', ${rowIndex})">
-                </td>
-                <td>
-                    <input type="number" class="set-input-small" 
-                           id="reps-${weekNum}-${dayNum}-${exerciseId}-${rowIndex}"
-                           placeholder="${setData.reps}" 
-                           value="${savedSetData.reps || ''}"
-                           onchange="updateSetData(${weekNum}, ${dayNum}, '${exerciseId}', ${rowIndex})">
-                </td>
-                <td>
-                    <input type="number" class="set-input-small" 
-                           id="rpe-${weekNum}-${dayNum}-${exerciseId}-${rowIndex}"
-                           placeholder="RPE" 
-                           min="1" max="10"
-                           value="${savedSetData.rpe || ''}"
-                           onchange="updateSetData(${weekNum}, ${dayNum}, '${exerciseId}', ${rowIndex})">
-                </td>
-                <td>
-                    <div class="set-check-small ${isCompleted ? 'completed' : ''}" 
-                         onclick="toggleSet(${weekNum}, ${dayNum}, '${exerciseId}', ${rowIndex})">
-                        ${isCompleted ? '✓' : ''}
+                <div class="exercise-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="completedSets-${cardId}">0</div>
+                        <div class="stat-label">Підходи</div>
                     </div>
-                </td>
-            </tr>
-        `;
-    }
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalReps-${cardId}">0</div>
+                        <div class="stat-label">Повтори</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalVolume-${cardId}">0</div>
+                        <div class="stat-label">Об'єм (кг)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgRPE-${cardId}">0</div>
+                        <div class="stat-label">Сер. RPE</div>
+                    </div>
+                </div>
+            `;
 
-    function autoFillExercise(weekNum, dayNum, exerciseId, totalSets, targetReps) {
-        const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId] || {};
-        const workingWeight = exerciseData.workingWeight || 0;
-        
-        if (workingWeight <= 0) {
-            alert('Спочатку введіть 1ПМ для розрахунку робочої ваги!');
-            return;
+            // Generate sets table after a short delay
+            setTimeout(() => {
+                generateSetsTable(cardId, sets, reps);
+                updateExerciseStats(cardId);
+            }, 100);
+
+            return card;
         }
 
-        if (weekNum === 1) {
-            fillWithWorkingWeight(weekNum, dayNum, exerciseId, totalSets, targetReps, workingWeight);
-        } else {
-            copyFromPreviousWeek(weekNum, dayNum, exerciseId, totalSets, targetReps, workingWeight);
-        }
-        
-        updateExerciseStats(weekNum, dayNum, exerciseId);
-    }
-
-    function fillWithWorkingWeight(weekNum, dayNum, exerciseId, totalSets, targetReps, workingWeight) {
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-
-        const warmupSets = generateWarmupSets(workingWeight);
-        
-        warmupSets.forEach((warmupSet, index) => {
-            const setNum = index + 1;
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
-                weight: warmupSet.weight,
-                reps: warmupSet.reps,
-                rpe: 6,
-                completed: false
+        function getExerciseTypeName(type) {
+            const names = {
+                'main': 'Основна',
+                'legs': 'Ноги',
+                'back': 'Спина',
+                'shoulders': 'Плечі',
+                'tricep': 'Трицепс',
+                'bicep': 'Біцепс'
             };
-        });
-        
-        for (let i = 0; i < totalSets; i++) {
-            const setNum = warmupSets.length + i + 1;
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
+            return names[type] || 'Допоміжна';
+        }
+
+        function toggleCalculator(cardId) {
+            const toggle = document.querySelector(`#${cardId} .calculator-toggle`);
+            const content = document.getElementById(`calc-${cardId}`);
+            
+            toggle.classList.toggle('active');
+            content.classList.toggle('open');
+        }
+
+        function switchCalcMode(cardId, mode) {
+            const directBtn = document.querySelector(`#${cardId} .calc-mode:first-child`);
+            const calculateBtn = document.querySelector(`#${cardId} .calc-mode:last-child`);
+            const directDiv = document.getElementById(`direct-${cardId}`);
+            const calculateDiv = document.getElementById(`calculate-${cardId}`);
+
+            if (mode === 'direct') {
+                directBtn.classList.add('active');
+                calculateBtn.classList.remove('active');
+                directDiv.classList.remove('hidden');
+                calculateDiv.classList.add('hidden');
+            } else {
+                directBtn.classList.remove('active');
+                calculateBtn.classList.add('active');
+                directDiv.classList.add('hidden');
+                calculateDiv.classList.remove('hidden');
+            }
+        }
+
+        function calculate1RMDirect(cardId, weekPercentage) {
+            const oneRMInput = document.getElementById(`oneRM-${cardId}`);
+            const oneRepMax = parseFloat(oneRMInput.value);
+            
+            if (!oneRepMax || oneRepMax <= 0) {
+                const resultElement = document.getElementById(`result-${cardId}`);
+                resultElement.textContent = '0 кг';
+                return;
+            }
+
+            const workingWeight = Math.round(oneRepMax * weekPercentage / 2.5) * 2.5;
+            const resultElement = document.getElementById(`result-${cardId}`);
+            resultElement.textContent = `${workingWeight} кг`;
+
+            // Save to program data
+            saveExerciseData(cardId, { oneRepMax, workingWeight });
+        }
+
+        function calculate1RMFromReps(cardId, weekPercentage) {
+            const weightInput = document.getElementById(`maxWeight-${cardId}`);
+            const repsInput = document.getElementById(`maxReps-${cardId}`);
+            
+            const maxWeight = parseFloat(weightInput.value);
+            const maxReps = parseInt(repsInput.value);
+
+            if (!maxWeight || !maxReps || maxWeight <= 0 || maxReps <= 0) {
+                alert('Введіть коректні дані: вагу та кількість повторень');
+                return;
+            }
+
+            const oneRepMax = Math.round(maxWeight * (1 + maxReps / 30) * 2) / 2;
+            const workingWeight = Math.round(oneRepMax * weekPercentage / 2.5) * 2.5;
+
+            document.getElementById(`oneRM-${cardId}`).value = oneRepMax;
+            document.getElementById(`result-${cardId}`).textContent = `${workingWeight} кг`;
+
+            saveExerciseData(cardId, { oneRepMax, workingWeight });
+            alert(`1ПМ розраховано: ${oneRepMax}кг → Робоча вага: ${workingWeight}кг`);
+        }
+
+        function saveExerciseData(cardId, data) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            
+            if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
+            if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
+            if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
+            }
+
+            Object.assign(programData.weeks[weekNum].days[dayNum].exercises[exerciseId], data);
+            saveProgramData();
+        }
+
+        function generateSetsTable(cardId, totalSets, targetReps) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId] || {};
+            const workingWeight = exerciseData.workingWeight || 0;
+            
+            const warmupSets = generateWarmupSets(workingWeight);
+            const workingSets = Array.from({length: totalSets}, (_, i) => ({
                 weight: workingWeight,
                 reps: targetReps,
-                rpe: 8,
-                completed: false
-            };
-        }
-        
-        saveProgramData();
-        generateSetsTable(weekNum, dayNum, exerciseId, totalSets, targetReps);
-        alert(`Автозаповнення завершено! Заповнено ${warmupSets.length} розминочних + ${totalSets} робочих підходів.`);
-    }
-
-    function copyFromPreviousWeek(weekNum, dayNum, exerciseId, totalSets, targetReps, workingWeight) {
-        const prevWeek = weekNum - 1;
-        const prevExerciseData = programData.weeks[prevWeek]?.days[dayNum]?.exercises[exerciseId];
-        
-        if (!prevExerciseData || !prevExerciseData.sets) {
-            fillWithWorkingWeight(weekNum, dayNum, exerciseId, totalSets, targetReps, workingWeight);
-            return;
-        }
-
-        const prevSets = Object.values(prevExerciseData.sets).filter(set => set.completed);
-        let progressionMultiplier = 1.0;
-        
-        if (prevSets.length > 0) {
-            const avgRPE = prevSets.reduce((sum, set) => sum + (set.rpe || 8), 0) / prevSets.length;
-            const allSetsCompleted = prevSets.length >= totalSets;
+                isWarmup: false,
+                setNumber: i + 1
+            }));
             
-            if (avgRPE < 7 && allSetsCompleted) {
-                progressionMultiplier = 1.05;
-            } else if (avgRPE <= 8 && allSetsCompleted) {
-                progressionMultiplier = 1.02;
-            } else {
-                progressionMultiplier = 1.0;
+            const allSets = [...warmupSets, ...workingSets];
+            const tbody = document.getElementById(`setsBody-${cardId}`);
+            
+            if (tbody) {
+                tbody.innerHTML = allSets.map((set, index) => 
+                    generateSetRow(cardId, set, index + 1)
+                ).join('');
             }
         }
 
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-
-        const warmupSets = generateWarmupSets(workingWeight);
-        
-        warmupSets.forEach((warmupSet, index) => {
-            const setNum = index + 1;
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
-                weight: warmupSet.weight,
-                reps: warmupSet.reps,
-                rpe: 6,
-                completed: false
-            };
-        });
-        
-        for (let i = 0; i < totalSets; i++) {
-            const setNum = warmupSets.length + i + 1;
-            const adjustedWeight = Math.round(workingWeight * progressionMultiplier / 2.5) * 2.5;
+        function generateWarmupSets(workingWeight) {
+            if (workingWeight <= 0) return [];
             
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
-                weight: adjustedWeight,
-                reps: targetReps,
-                rpe: 8,
-                completed: false
-            };
-        }
-        
-        saveProgramData();
-        generateSetsTable(weekNum, dayNum, exerciseId, totalSets, targetReps);
-        
-        const message = progressionMultiplier > 1.0 ? 
-            `Автозаповнення з прогресією! Вага збільшена на ${Math.round((progressionMultiplier - 1) * 100)}% завдяки хорошому RPE минулого тижня.` :
-            `Автозаповнення завершено. Вага залишилась без змін через високе RPE минулого тижня.`;
-        alert(message);
-    }
-
-    function toggleCalcMode(weekNum, dayNum, exerciseId, mode) {
-        const directBtn = document.getElementById(`direct-${weekNum}-${dayNum}-${exerciseId}`);
-        const calculateBtn = document.getElementById(`calculate-${weekNum}-${dayNum}-${exerciseId}`);
-        const directDiv = document.getElementById(`calc-direct-${weekNum}-${dayNum}-${exerciseId}`);
-        const calculateDiv = document.getElementById(`calc-calculate-${weekNum}-${dayNum}-${exerciseId}`);
-
-        if (mode === 'direct') {
-            if (directBtn) directBtn.classList.add('active');
-            if (calculateBtn) calculateBtn.classList.remove('active');
-            if (directDiv) directDiv.classList.remove('hidden');
-            if (calculateDiv) calculateDiv.classList.add('hidden');
-        } else {
-            if (directBtn) directBtn.classList.remove('active');
-            if (calculateBtn) calculateBtn.classList.add('active');
-            if (directDiv) directDiv.classList.add('hidden');
-            if (calculateDiv) calculateDiv.classList.remove('hidden');
-        }
-    }
-
-    function calculate1RMDirect(weekNum, dayNum, exerciseId, weekPercentage) {
-        const oneRMInput = document.getElementById(`oneRM-${weekNum}-${dayNum}-${exerciseId}`);
-        const oneRepMax = parseFloat(oneRMInput.value);
-        
-        if (!oneRepMax || oneRepMax <= 0) {
-            const resultElement = document.getElementById(`result-${weekNum}-${dayNum}-${exerciseId}`);
-            if (resultElement) resultElement.textContent = '0 кг';
-            return;
-        }
-
-        const workingWeight = Math.round(oneRepMax * weekPercentage / 2.5) * 2.5;
-        const resultElement = document.getElementById(`result-${weekNum}-${dayNum}-${exerciseId}`);
-        if (resultElement) resultElement.textContent = `${workingWeight} кг`;
-
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].oneRepMax = oneRepMax;
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].workingWeight = workingWeight;
-        saveProgramData();
-        
-        const exercise = exerciseTemplates[dayNum].find(ex => ex.id === exerciseId);
-        if (exercise) {
-            const weekData = programStructure[weekNum];
-            const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
-            const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
-            generateSetsTable(weekNum, dayNum, exerciseId, sets, reps);
-        }
-    }
-
-    function calculate1RMFromReps(weekNum, dayNum, exerciseId, weekPercentage) {
-        const weightInput = document.getElementById(`maxWeight-${weekNum}-${dayNum}-${exerciseId}`);
-        const repsInput = document.getElementById(`maxReps-${weekNum}-${dayNum}-${exerciseId}`);
-        
-        const maxWeight = parseFloat(weightInput.value);
-        const maxReps = parseInt(repsInput.value);
-
-        if (!maxWeight || !maxReps || maxWeight <= 0 || maxReps <= 0) {
-            alert('Введіть коректні дані: вагу та кількість повторень');
-            return;
-        }
-
-        const oneRepMax = Math.round(maxWeight * (1 + maxReps / 30) * 2) / 2;
-        const workingWeight = Math.round(oneRepMax * weekPercentage / 2.5) * 2.5;
-
-        const oneRMElement = document.getElementById(`oneRM-${weekNum}-${dayNum}-${exerciseId}`);
-        const resultElement = document.getElementById(`result-${weekNum}-${dayNum}-${exerciseId}`);
-        if (oneRMElement) oneRMElement.value = oneRepMax;
-        if (resultElement) resultElement.textContent = `${workingWeight} кг`;
-
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].oneRepMax = oneRepMax;
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].workingWeight = workingWeight;
-        saveProgramData();
-
-        const exercise = exerciseTemplates[dayNum].find(ex => ex.id === exerciseId);
-        if (exercise) {
-            const weekData = programStructure[weekNum];
-            const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
-            const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
-            generateSetsTable(weekNum, dayNum, exerciseId, sets, reps);
-        }
-
-        alert(`1ПМ розраховано: ${oneRepMax}кг → Робоча вага для цього тижня: ${workingWeight}кг (${Math.round(weekPercentage * 100)}%)`);
-    }
-
-    function autoProgressWeight(weekNum, dayNum, exerciseId, weekPercentage) {
-        const prevWeek = weekNum - 1;
-        if (prevWeek < 1) return;
-
-        const prevExerciseData = programData.weeks[prevWeek]?.days[dayNum]?.exercises[exerciseId];
-        if (!prevExerciseData || !prevExerciseData.sets) {
-            alert('Немає даних з минулого тижня для цієї вправи');
-            return;
-        }
-
-        const sets = Object.values(prevExerciseData.sets).filter(set => set.completed);
-        if (sets.length === 0) {
-            alert('Немає завершених підходів з минулого тижня');
-            return;
-        }
-
-        const avgRPE = sets.reduce((sum, set) => sum + (set.rpe || 8), 0) / sets.length;
-        const allSetsCompleted = sets.length >= 3;
-
-        let progressionMultiplier = 1;
-
-        if (avgRPE < 7 && allSetsCompleted) {
-            progressionMultiplier = 1.06;
-        } else if (avgRPE <= 8 && allSetsCompleted) {
-            progressionMultiplier = 1.03;
-        } else if (avgRPE > 8 || !allSetsCompleted) {
-            progressionMultiplier = 1.0;
-        }
-
-        const newOneRepMax = Math.round(prevExerciseData.oneRepMax * progressionMultiplier * 2) / 2;
-        const newWorkingWeight = Math.round(newOneRepMax * weekPercentage / 2.5) * 2.5;
-        
-        const oneRMElement = document.getElementById(`oneRM-${weekNum}-${dayNum}-${exerciseId}`);
-        const resultElement = document.getElementById(`result-${weekNum}-${dayNum}-${exerciseId}`);
-        if (oneRMElement) oneRMElement.value = newOneRepMax;
-        if (resultElement) resultElement.textContent = `${newWorkingWeight} кг`;
-
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].oneRepMax = newOneRepMax;
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].workingWeight = newWorkingWeight;
-        saveProgramData();
-
-        const exercise = exerciseTemplates[dayNum].find(ex => ex.id === exerciseId);
-        if (exercise) {
-            const weekData = programStructure[weekNum];
-            const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
-            const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
-            generateSetsTable(weekNum, dayNum, exerciseId, sets, reps);
-        }
-        
-        const message = progressionMultiplier > 1 ? 
-            `Прогрес! Новий 1ПМ: ${newOneRepMax}кг (було ${prevExerciseData.oneRepMax}кг)\nРобоча вага: ${newWorkingWeight}кг (${Math.round(weekPercentage * 100)}%)` :
-            `1ПМ залишається: ${newOneRepMax}кг (RPE був ${avgRPE.toFixed(1)})\nРобоча вага: ${newWorkingWeight}кг (${Math.round(weekPercentage * 100)}%)`;
-        alert(message);
-    }
-
-    function updateSetData(weekNum, dayNum, exerciseId, setNum) {
-        const weightInput = document.getElementById(`weight-${weekNum}-${dayNum}-${exerciseId}-${setNum}`);
-        const repsInput = document.getElementById(`reps-${weekNum}-${dayNum}-${exerciseId}-${setNum}`);
-        const rpeInput = document.getElementById(`rpe-${weekNum}-${dayNum}-${exerciseId}-${setNum}`);
-
-        const weight = parseFloat(weightInput ? weightInput.value : 0) || 0;
-        const reps = parseInt(repsInput ? repsInput.value : 0) || 0;
-        const rpe = parseInt(rpeInput ? rpeInput.value : 0) || 0;
-
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {};
-        }
-
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum].weight = weight;
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum].reps = reps;
-        programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum].rpe = rpe;
-
-        saveProgramData();
-        updateExerciseStats(weekNum, dayNum, exerciseId);
-    }
-
-    function toggleSet(weekNum, dayNum, exerciseId, setNum) {
-        const setRow = document.getElementById(`setRow-${weekNum}-${dayNum}-${exerciseId}-${setNum}`);
-        const checkBtn = setRow ? setRow.querySelector('.set-check-small') : null;
-        
-        if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
-        if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
-        }
-        if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum]) {
-            programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {};
-        }
-
-        const setData = programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum];
-        const isCompleted = setData.completed || false;
-
-        setData.completed = !isCompleted;
-        
-        if (setRow && checkBtn) {
-            if (setData.completed) {
-                setRow.style.background = '#f0fff4';
-                checkBtn.classList.add('completed');
-                checkBtn.textContent = '✓';
+            let warmupSets = [];
+            
+            if (workingWeight < 60) {
+                warmupSets = [
+                    { percentage: 0.40, reps: 10 },
+                    { percentage: 0.70, reps: 6 }
+                ];
+            } else if (workingWeight <= 100) {
+                warmupSets = [
+                    { percentage: 0.40, reps: 10 },
+                    { percentage: 0.60, reps: 8 },
+                    { percentage: 0.80, reps: 3 }
+                ];
+            } else if (workingWeight <= 150) {
+                warmupSets = [
+                    { percentage: 0.30, reps: 10 },
+                    { percentage: 0.50, reps: 8 },
+                    { percentage: 0.70, reps: 5 },
+                    { percentage: 0.85, reps: 2 }
+                ];
             } else {
-                setRow.style.background = '';
-                checkBtn.classList.remove('completed');
-                checkBtn.textContent = '';
+                warmupSets = [
+                    { percentage: 0.25, reps: 10 },
+                    { percentage: 0.40, reps: 8 },
+                    { percentage: 0.60, reps: 6 },
+                    { percentage: 0.75, reps: 3 },
+                    { percentage: 0.85, reps: 2 }
+                ];
             }
+            
+            return warmupSets.map((set, index) => ({
+                weight: Math.round(workingWeight * set.percentage / 2.5) * 2.5,
+                reps: set.reps,
+                isWarmup: true,
+                setNumber: `Р${index + 1}`
+            }));
         }
 
-        saveProgramData();
-        updateExerciseStats(weekNum, dayNum, exerciseId);
-    }
+        function generateSetRow(cardId, setData, rowIndex) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const savedSetData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId]?.sets[rowIndex] || {};
+            const isCompleted = savedSetData.completed || false;
+            const rowClass = setData.isWarmup ? 'warmup-row' : 'working-row';
+            
+            return `
+                <tr class="${rowClass}" ${isCompleted ? 'style="background: var(--success); color: white;"' : ''}>
+                    <td><strong>${setData.setNumber}</strong></td>
+                    <td>
+                        <input type="number" class="set-input" 
+                               id="weight-${cardId}-${rowIndex}"
+                               placeholder="${setData.weight || 'кг'}" 
+                               value="${savedSetData.weight || (setData.isWarmup ? setData.weight : '')}"
+                               onchange="updateSetData('${cardId}', ${rowIndex})">
+                    </td>
+                    <td>
+                        <input type="number" class="set-input" 
+                               id="reps-${cardId}-${rowIndex}"
+                               placeholder="${setData.reps}" 
+                               value="${savedSetData.reps || ''}"
+                               onchange="updateSetData('${cardId}', ${rowIndex})">
+                    </td>
+                    <td>
+                        <input type="number" class="set-input" 
+                               id="rpe-${cardId}-${rowIndex}"
+                               placeholder="RPE" 
+                               min="1" max="10"
+                               value="${savedSetData.rpe || ''}"
+                               onchange="updateSetData('${cardId}', ${rowIndex})">
+                    </td>
+                    <td>
+                        <div class="set-checkbox ${isCompleted ? 'completed' : ''}" 
+                             onclick="toggleSet('${cardId}', ${rowIndex})">
+                            ${isCompleted ? '✓' : ''}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
 
-    function updateExerciseStats(weekNum, dayNum, exerciseId) {
-        const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId];
-        if (!exerciseData || !exerciseData.sets) return;
+        function updateSetData(cardId, setNum) {
+            const weightInput = document.getElementById(`weight-${cardId}-${setNum}`);
+            const repsInput = document.getElementById(`reps-${cardId}-${setNum}`);
+            const rpeInput = document.getElementById(`rpe-${cardId}-${setNum}`);
 
-        const sets = Object.values(exerciseData.sets);
-        const completedSets = sets.filter(set => set.completed);
-        
-        const totalReps = completedSets.reduce((sum, set) => sum + (set.reps || 0), 0);
-        const totalVolume = completedSets.reduce((sum, set) => sum + ((set.weight || 0) * (set.reps || 0)), 0);
-        const avgRPE = completedSets.length > 0 ? 
-            completedSets.reduce((sum, set) => sum + (set.rpe || 0), 0) / completedSets.length : 0;
+            const weight = parseFloat(weightInput?.value) || 0;
+            const reps = parseInt(repsInput?.value) || 0;
+            const rpe = parseInt(rpeInput?.value) || 0;
 
-        const completedEl = document.getElementById(`completedSets-${weekNum}-${dayNum}-${exerciseId}`);
-        const repsEl = document.getElementById(`totalReps-${weekNum}-${dayNum}-${exerciseId}`);
-        const volumeEl = document.getElementById(`totalVolume-${weekNum}-${dayNum}-${exerciseId}`);
-        const rpeEl = document.getElementById(`avgRPE-${weekNum}-${dayNum}-${exerciseId}`);
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            
+            if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
+            if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
+            if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
+            }
+            if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum]) {
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {};
+            }
 
-        if (completedEl) completedEl.textContent = completedSets.length;
-        if (repsEl) repsEl.textContent = totalReps;
-        if (volumeEl) volumeEl.textContent = totalVolume;
-        if (rpeEl) rpeEl.textContent = avgRPE.toFixed(1);
-    }
+            const setData = programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum];
+            setData.weight = weight;
+            setData.reps = reps;
+            setData.rpe = rpe;
 
-    function completeWeek() {
-        if (confirm(`Завершити тиждень ${currentWeek}? Це дозволить перейти до наступного тижня.`)) {
-            programData.weeks[currentWeek].completed = true;
             saveProgramData();
-            generateWeekSelector();
-            updateOverallProgress();
+            updateExerciseStats(cardId);
+        }
+
+        function toggleSet(cardId, setNum) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
             
-            if (currentWeek < 12) {
-                setTimeout(() => {
-                    loadWeek(currentWeek + 1);
-                    alert(`Тиждень ${currentWeek - 1} завершено! Переходимо до тижня ${currentWeek}.`);
-                }, 500);
+            if (!programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId]?.sets[setNum]) {
+                return;
+            }
+
+            const setData = programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum];
+            setData.completed = !setData.completed;
+
+            // Update UI
+            const row = document.querySelector(`#setsBody-${cardId} tr:nth-child(${setNum})`);
+            const checkbox = row.querySelector('.set-checkbox');
+            
+            if (setData.completed) {
+                row.style.background = 'var(--success)';
+                row.style.color = 'white';
+                checkbox.classList.add('completed');
+                checkbox.textContent = '✓';
             } else {
-                alert('Вітаємо! Ви завершили всю 12-тижневу програму! 🎉');
+                row.style.background = '';
+                row.style.color = '';
+                checkbox.classList.remove('completed');
+                checkbox.textContent = '';
             }
+
+            saveProgramData();
+            updateExerciseStats(cardId);
         }
-    }
 
-    function updateOverallProgress() {
-        const completedWeeks = Object.values(programData.weeks || {}).filter(week => week.completed).length;
-        const progressPercent = (completedWeeks / 12) * 100;
-        
-        const progressEl = document.getElementById('overallProgress');
-        const textEl = document.getElementById('progressText');
-        
-        if (progressEl) progressEl.style.width = `${progressPercent}%`;
-        if (textEl) textEl.textContent = `Тиждень ${currentWeek} з 12 • ${Math.round(progressPercent)}% завершено`;
-    }
+        function updateExerciseStats(cardId) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId];
+            if (!exerciseData || !exerciseData.sets) return;
 
-    function exportData() {
-        const dataStr = JSON.stringify(programData, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        const url = URL.createObjectURL(dataBlob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `bench-press-tracker-full-backup-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        alert('Дані експортовано! Файл завантажено.');
-    }
+            const sets = Object.values(exerciseData.sets);
+            const completedSets = sets.filter(set => set.completed);
+            
+            const totalReps = completedSets.reduce((sum, set) => sum + (set.reps || 0), 0);
+            const totalVolume = completedSets.reduce((sum, set) => sum + ((set.weight || 0) * (set.reps || 0)), 0);
+            const avgRPE = completedSets.length > 0 ? 
+                completedSets.reduce((sum, set) => sum + (set.rpe || 0), 0) / completedSets.length : 0;
 
-    function importData(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const importedData = JSON.parse(e.target.result);
+            const completedEl = document.getElementById(`completedSets-${cardId}`);
+            const repsEl = document.getElementById(`totalReps-${cardId}`);
+            const volumeEl = document.getElementById(`totalVolume-${cardId}`);
+            const rpeEl = document.getElementById(`avgRPE-${cardId}`);
+
+            if (completedEl) completedEl.textContent = completedSets.length;
+            if (repsEl) repsEl.textContent = totalReps;
+            if (volumeEl) volumeEl.textContent = totalVolume;
+            if (rpeEl) rpeEl.textContent = avgRPE > 0 ? avgRPE.toFixed(1) : '0';
+        }
+
+        function autoFillExercise(cardId, totalSets, targetReps) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const exerciseData = programData.weeks[weekNum]?.days[dayNum]?.exercises[exerciseId] || {};
+            const workingWeight = exerciseData.workingWeight || 0;
+            
+            if (workingWeight <= 0) {
+                alert('Спочатку введіть 1ПМ для розрахунку робочої ваги!');
+                return;
+            }
+
+            if (parseInt(weekNum) === 1) {
+                fillWithWorkingWeight(cardId, totalSets, targetReps, workingWeight);
+            } else {
+                copyFromPreviousWeek(cardId, totalSets, targetReps, workingWeight);
+            }
+            
+            generateSetsTable(cardId, totalSets, targetReps);
+            updateExerciseStats(cardId);
+        }
+
+        function fillWithWorkingWeight(cardId, totalSets, targetReps, workingWeight) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            
+            if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
+            if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
+            if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
+            }
+
+            const warmupSets = generateWarmupSets(workingWeight);
+            
+            // Fill warmup sets
+            warmupSets.forEach((warmupSet, index) => {
+                const setNum = index + 1;
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
+                    weight: warmupSet.weight,
+                    reps: warmupSet.reps,
+                    rpe: 6,
+                    completed: false
+                };
+            });
+            
+            // Fill working sets
+            for (let i = 0; i < totalSets; i++) {
+                const setNum = warmupSets.length + i + 1;
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
+                    weight: workingWeight,
+                    reps: targetReps,
+                    rpe: 8,
+                    completed: false
+                };
+            }
+            
+            saveProgramData();
+            alert(`Автозаповнення завершено! ${warmupSets.length} розминочних + ${totalSets} робочих підходів.`);
+        }
+
+        function copyFromPreviousWeek(cardId, totalSets, targetReps, workingWeight) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const prevWeek = parseInt(weekNum) - 1;
+            const prevExerciseData = programData.weeks[prevWeek]?.days[dayNum]?.exercises[exerciseId];
+            
+            if (!prevExerciseData || !prevExerciseData.sets) {
+                fillWithWorkingWeight(cardId, totalSets, targetReps, workingWeight);
+                return;
+            }
+
+            const prevSets = Object.values(prevExerciseData.sets).filter(set => set.completed);
+            let progressionMultiplier = 1.0;
+            
+            if (prevSets.length > 0) {
+                const avgRPE = prevSets.reduce((sum, set) => sum + (set.rpe || 8), 0) / prevSets.length;
+                const allSetsCompleted = prevSets.length >= totalSets;
                 
-                if (confirm('Імпортувати дані? Це замінить поточні дані.')) {
-                    programData = importedData;
-                    currentWeek = programData.currentWeek || 1;
-                    saveProgramData();
-                    generateWeekSelector();
-                    loadWeek(currentWeek);
-                    alert('Дані успішно імпортовано!');
+                if (avgRPE < 7 && allSetsCompleted) {
+                    progressionMultiplier = 1.05;
+                } else if (avgRPE <= 8 && allSetsCompleted) {
+                    progressionMultiplier = 1.02;
                 }
-            } catch (error) {
-                alert('Помилка при імпорті файлу. Перевірте формат файлу.');
-                console.error('Import error:', error);
             }
-        };
-        reader.readAsText(file);
-        
-        event.target.value = '';
-    }
 
-    function clearAllData() {
-        if (confirm('Видалити всі дані? Цю дію неможливо скасувати!')) {
-            if (confirm('Ви впевнені? Всі ваші тренування будуть втрачені!')) {
-                localStorage.removeItem('benchPressTrackerFull');
-                initializeProgramData();
-                currentWeek = 1;
-                generateWeekSelector();
-                loadWeek(1);
-                alert('Всі дані очищено.');
+            if (!programData.weeks[weekNum]) programData.weeks[weekNum] = { days: {} };
+            if (!programData.weeks[weekNum].days[dayNum]) programData.weeks[weekNum].days[dayNum] = { exercises: {} };
+            if (!programData.weeks[weekNum].days[dayNum].exercises[exerciseId]) {
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId] = { sets: {} };
+            }
+
+            const warmupSets = generateWarmupSets(workingWeight);
+            
+            // Fill warmup sets
+            warmupSets.forEach((warmupSet, index) => {
+                const setNum = index + 1;
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
+                    weight: warmupSet.weight,
+                    reps: warmupSet.reps,
+                    rpe: 6,
+                    completed: false
+                };
+            });
+            
+            // Fill working sets with progression
+            for (let i = 0; i < totalSets; i++) {
+                const setNum = warmupSets.length + i + 1;
+                const adjustedWeight = Math.round(workingWeight * progressionMultiplier / 2.5) * 2.5;
+                
+                programData.weeks[weekNum].days[dayNum].exercises[exerciseId].sets[setNum] = {
+                    weight: adjustedWeight,
+                    reps: targetReps,
+                    rpe: 8,
+                    completed: false
+                };
+            }
+            
+            saveProgramData();
+            
+            const message = progressionMultiplier > 1.0 ? 
+                `Автозаповнення з прогресією! Вага збільшена на ${Math.round((progressionMultiplier - 1) * 100)}%` :
+                `Автозаповнення завершено. Вага без змін через високе RPE.`;
+            alert(message);
+        }
+
+        function autoProgressWeight(cardId, weekPercentage) {
+            const [, weekNum, dayNum, exerciseId] = cardId.split('-');
+            const prevWeek = parseInt(weekNum) - 1;
+            
+            if (prevWeek < 1) return;
+
+            const prevExerciseData = programData.weeks[prevWeek]?.days[dayNum]?.exercises[exerciseId];
+            if (!prevExerciseData || !prevExerciseData.sets) {
+                alert('Немає даних з минулого тижня для цієї вправи');
+                return;
+            }
+
+            const sets = Object.values(prevExerciseData.sets).filter(set => set.completed);
+            if (sets.length === 0) {
+                alert('Немає завершених підходів з минулого тижня');
+                return;
+            }
+
+            const avgRPE = sets.reduce((sum, set) => sum + (set.rpe || 8), 0) / sets.length;
+            const allSetsCompleted = sets.length >= 3;
+
+            let progressionMultiplier = 1;
+
+            if (avgRPE < 7 && allSetsCompleted) {
+                progressionMultiplier = 1.06;
+            } else if (avgRPE <= 8 && allSetsCompleted) {
+                progressionMultiplier = 1.03;
+            }
+
+            const newOneRepMax = Math.round(prevExerciseData.oneRepMax * progressionMultiplier * 2) / 2;
+            const newWorkingWeight = Math.round(newOneRepMax * weekPercentage / 2.5) * 2.5;
+            
+            document.getElementById(`oneRM-${cardId}`).value = newOneRepMax;
+            document.getElementById(`result-${cardId}`).textContent = `${newWorkingWeight} кг`;
+
+            saveExerciseData(cardId, { oneRepMax: newOneRepMax, workingWeight: newWorkingWeight });
+            
+            const message = progressionMultiplier > 1 ? 
+                `Прогрес! Новий 1ПМ: ${newOneRepMax}кг → ${newWorkingWeight}кг` :
+                `1ПМ залишається: ${newOneRepMax}кг (RPE ${avgRPE.toFixed(1)})`;
+            alert(message);
+        }
+
+        function completeWeek() {
+            if (confirm(`Завершити тиждень ${currentWeek}?`)) {
+                programData.weeks[currentWeek].completed = true;
+                saveProgramData();
+                updateSidebarWeeks();
+                updateProgress();
+                
+                if (currentWeek < 12) {
+                    setTimeout(() => {
+                        loadWeek(currentWeek + 1);
+                        alert(`Тиждень ${currentWeek - 1} завершено! Переходимо до тижня ${currentWeek}.`);
+                    }, 500);
+                } else {
+                    alert('Вітаємо! Ви завершили всю програму! 🎉');
+                }
             }
         }
-    }
 
-    function loadWeek(weekNum) {
-        console.log('Завантажуємо тиждень', weekNum);
-        currentWeek = weekNum;
-        programData.currentWeek = currentWeek;
-        saveProgramData();
-        generateWeekSelector();
-        displayWeek(weekNum);
-        updateOverallProgress();
-        
-        setTimeout(() => {
-            for (let day = 1; day <= 3; day++) {
-                exerciseTemplates[day].forEach(exercise => {
-                    const weekData = programStructure[weekNum];
-                    const sets = exercise.isMain ? weekData.sets : (exercise.sets || 3);
-                    const reps = exercise.isMain ? weekData.reps : (exercise.reps || 10);
+        function updateProgress() {
+            const completedWeeks = Object.values(programData.weeks || {}).filter(week => week.completed).length;
+            const progressPercent = (completedWeeks / 12) * 100;
+            
+            const progressEl = document.getElementById('overallProgress');
+            const textEl = document.getElementById('progressText');
+            
+            if (progressEl) progressEl.style.width = `${progressPercent}%`;
+            if (textEl) textEl.textContent = `Тиждень ${currentWeek} з 12 • ${Math.round(progressPercent)}% завершено`;
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(programData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `bench-tracker-modern-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Дані експортовано!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
                     
-                    generateSetsTable(weekNum, day, exercise.id, sets, reps);
-                    updateExerciseStats(weekNum, day, exercise.id);
-                });
-            }
-        }, 100);
-    }
-</script>
-```
+                    if (confirm('Імпортувати дані? Це замінить поточні дані.')) {
+                        programData = importedData;
+                        currentWeek = programData.currentWeek || 1;
+                        saveProgramData();
+                        loadWeek(currentWeek);
+                        alert('Дані успішно імпортовано!');
+                    }
+                } catch (error) {
+                    alert('Помилка при імпорті файлу.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function updateMobileMenu() {
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 768) {
+                mobileBtn.style.display = 'flex';
+            } else {
+                mobileBtn.style.display = 'none';
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('load', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            currentTheme = savedTheme;
+            document.body.setAttribute('data-theme', currentTheme);
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+        });
+
+        // Mobile responsiveness
+        window.addEventListener('resize', updateMobileMenu);
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const mobileBtn = document.querySelector('.mobile-menu-btn');
+                
+                if (!sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
