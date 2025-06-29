@@ -448,19 +448,26 @@
             transform: rotate(180deg);
         }
 
+        .calculator-content:not(.open) {
+            border: none;
+        }
+
         .calculator-content {
             border: 1px solid var(--border-color);
             border-top: none;
             border-radius: 0 0 12px 12px;
-            padding: 1.5rem;
+            padding: 0;
             background: var(--bg-secondary);
             max-height: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .calculator-content.open {
-            max-height: 500px;
+            max-height: 400px;
+            opacity: 1;
+            padding: 1.5rem;
         }
 
         .calc-modes {
@@ -1257,10 +1264,10 @@
                 </div>
 
                 <div class="calculator-section">
-                    <div class="calculator-toggle" onclick="toggleCalculator('${cardId}')">
+                    <div class="calculator-toggle" onclick="toggleCalculator('${cardId}')" id="toggle-${cardId}">
                         <div class="toggle-text">
                             <span>⚖️</span>
-                            <span>Калькулятор ваги (${displayPercentage}%)</span>
+                            <span>Калькулятор робочої ваги (${displayPercentage}%)</span>
                         </div>
                         <div class="toggle-icon">▼</div>
                     </div>
@@ -1377,11 +1384,36 @@
         }
 
         function toggleCalculator(cardId) {
-            const toggle = document.querySelector(`#${cardId} .calculator-toggle`);
+            const toggle = document.getElementById(`toggle-${cardId}`);
             const content = document.getElementById(`calc-${cardId}`);
             
-            toggle.classList.toggle('active');
-            content.classList.toggle('open');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                // Closing
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.offsetHeight; // Force reflow
+                content.style.maxHeight = '0';
+                content.style.padding = '0 1.5rem';
+                toggle.classList.remove('active');
+                
+                setTimeout(() => {
+                    content.classList.remove('open');
+                }, 200);
+            } else {
+                // Opening
+                content.classList.add('open');
+                toggle.classList.add('active');
+                content.style.maxHeight = '0';
+                content.style.padding = '0 1.5rem';
+                content.offsetHeight; // Force reflow
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.padding = '1.5rem';
+                
+                setTimeout(() => {
+                    content.style.maxHeight = '400px';
+                }, 400);
+            }
         }
 
         function switchCalcMode(cardId, mode) {
